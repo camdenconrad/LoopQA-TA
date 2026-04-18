@@ -1,14 +1,13 @@
 {
-  "name": "${PROJECT_NAME}",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "name": "loop",
+  "private": true,
   "scripts": {
-    "build": "tsc"
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report test-results/html"
   },
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.5.3"
-  },
-  "private": true
+    "@playwright/test": "^1.59.1",
+    "typescript": "^5.9.3"
+  }
 }

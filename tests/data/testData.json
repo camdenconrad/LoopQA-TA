@@ -1,0 +1,51 @@
+[
+  {
+    "id": "TC1",
+    "board": "Web Application",
+    "task": "Implement user authentication",
+    "column": "To Do",
+    "tags": ["Feature", "High Priority"]
+  },
+  {
+    "id": "TC2",
+    "board": "Web Application",
+    "task": "Fix navigation bug",
+    "column": "To Do",
+    "tags": ["Bug"]
+  },
+  {
+    "id": "TC3",
+    "board": "Web Application",
+    "task": "Design system updates",
+    "column": "In Progress",
+    "tags": ["Design"]
+  },
+  {
+    "id": "TC4",
+    "board": "Mobile Application",
+    "task": "Push notification system",
+    "column": "To Do",
+    "tags": ["Feature"]
+  },
+  {
+    "id": "TC5",
+    "board": "Mobile Application",
+    "task": "Offline mode",
+    "column": "In Progress",
+    "tags": ["Feature", "High Priority"]
+  },
+  {
+    "id": "TC6",
+    "board": "Mobile Application",
+    "task": "App icon design",
+    "column": "Done",
+    "tags": ["Design"]
+  },
+  {
+    "id": "TC7",
+    "board": "Marketing Campaign",
+    "task": "Email campaign",
+    "column": "In Progress",
+    "tags": ["Design", "High Priority"]
+  }
+]

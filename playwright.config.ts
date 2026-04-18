@@ -5,10 +5,16 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  reporter: 'html',
+  outputDir: 'test-results/artifacts',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'test-results/html', open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+  ],
   use: {
     baseURL: 'https://animated-gingersnap-8cf7f2.netlify.app',
     trace: 'on-first-retry',
+    video: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   projects: [

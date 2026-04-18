@@ -1,34 +1,49 @@
 import { test, expect } from '@playwright/test';
+import { login } from './helpers/login';
+import testCases from './data/testData.json';
 
+/**
+ * Data-driven regression suite for task board validation.
+ *
+ * All scenarios are defined in testData.json. Adding a test case requires
+ * only a new JSON entry — test coverage scales with the product without
+ * increasing maintenance cost.
+ */
 test.describe('Login Automation', () => {
+
+  // Credentials resolve from environment variables first (CI/CD safe),
+  // falling back to tests/data/credentials.json for local runs.
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.getByLabel('Username').fill('admin');
-    await page.getByLabel('Password').fill('password123');
-    await page.getByRole('button', { name: 'Sign in' }).click();
-    // Wait for the dashboard to load after login
+    await login(page);
     await expect(page.getByRole('heading', { name: 'Web Application', level: 1 })).toBeVisible();
   });
 
-  test('TC1 - Web Application: "Implement user authentication" is in To Do with correct tags', async ({ page }) => {
-    // Navigate to "Web Application" via the sidebar button
-    await page.getByRole('button', { name: /Web Application/ }).first().click();
+  // Each object in testData.json generates one test — no code changes needed to add cases.
+  for (const tc of testCases) {
 
-    // Confirm we are on the Web Application board
-    await expect(page.getByRole('heading', { name: 'Web Application', level: 1 })).toBeVisible();
+    test(`${tc.id} - ${tc.board}: "${tc.task}" is in ${tc.column} with correct tags`, async ({ page }) => {
 
-    // Find the task card with the correct title
-    const taskCard = page.locator('div').filter({ hasText: /^Implement user authentication/ }).first();
-    await expect(taskCard).toBeVisible();
+      // Navigate to the target board. Strict role-based selection — Playwright throws
+      // on duplicate matches, surfacing regressions immediately.
+      await page.getByRole('button', { name: tc.board }).click();
+      await expect(page.getByRole('heading', { name: tc.board, level: 1 })).toBeVisible();
 
-    // Verify the task is within the "To Do" column
-    const todoColumn = page.locator('div').filter({ hasText: /^To Do/ }).first();
-    await expect(todoColumn.locator('text=Implement user authentication')).toBeVisible();
+      // Scope to the column container. In production, data-testid attributes
+      // would be preferred for more deterministic targeting.
+      const column = page.locator('div:has(> h2)').filter({ hasText: tc.column });
+      await expect(column).toBeVisible();
 
-    // Verify "Feature" tag on the card
-    await expect(taskCard.getByText('Feature', { exact: true })).toBeVisible();
+      // Find the task card within the column — validates placement, not just page presence.
+      // In production: column.getByTestId('task-card').filter({ hasText: tc.task })
+      const taskCard = column.locator('div:has(> h3)').filter({ hasText: tc.task });
+      await expect(taskCard).toBeVisible();
 
-    // Verify "High Priority" tag on the card
-    await expect(taskCard.getByText('High Priority', { exact: true })).toBeVisible();
-  });
+      // Verify each tag. exact: true prevents partial matches (e.g. "Feature" ≠ "Feature Request").
+      for (const tag of tc.tags) {
+        await expect(taskCard.getByText(tag, { exact: true })).toBeVisible();
+      }
+
+    });
+  }
+
 });
